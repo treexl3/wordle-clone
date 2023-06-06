@@ -1,0 +1,740 @@
+* {
+   margin: 0;
+   padding: 0;
+   transition: all 0.3s ease-in-out 0s;
+}
+
+html,
+body {
+   height: 100%;
+   overflow-x: hidden;
+   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+      "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+}
+html.dark body {
+   background-color: #131111;
+}
+html.light body {
+   background-color: gainsboro;
+}
+
+#container {
+   display: flex;
+   align-items: center;
+   flex-direction: column;
+   height: 100%;
+}
+
+#game {
+   width: 100%;
+   height: 100%;
+   max-width: 500px;
+   display: flex;
+   flex-direction: column;
+}
+
+.header {
+   border-bottom: 1px solid rgb(58, 58, 60);
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+}
+.header-block {
+   display: flex;
+   align-items: center;
+   gap: 12px;
+}
+
+.title {
+   margin: 0.4rem 0 0.4rem 2.65rem;
+
+   text-align: center;
+   font-size: 2.5rem;
+   font-weight: 700;
+}
+html.dark .title {
+   color: gainsboro;
+}
+html.light .title {
+   color: #45495f;
+}
+@media (max-width: 767px) {
+   #container {
+      padding: 0 20px;
+   }
+   .title {
+      font-size: 2rem;
+   }
+}
+@media (max-width: 375px) {
+   .title {
+      font-size: 1.8rem;
+   }
+}
+
+#help,
+#stats,
+#settings {
+   color: rgb(58, 58, 60);
+   font-size: 1.5rem;
+   cursor: pointer;
+   transition: all 0.15s ease 0s;
+}
+html.dark #help,
+html.dark #stats,
+html.dark #settings {
+   color: rgb(58, 58, 60);
+}
+html.dark #help:hover,
+html.dark #stats:hover,
+html.dark #settings:hover,
+html.dark #help:focus,
+html.dark #stats:focus,
+html.dark #settings:focus {
+   color: #fff;
+}
+html.light #help,
+html.light #stats,
+html.light #settings {
+   color: #45495f;
+}
+html.light #help:hover,
+html.light #stats:hover,
+html.light #settings:hover,
+html.light #help:focus,
+html.light #stats:focus,
+html.light #settings:focus {
+   color: rgb(69, 73, 95, 0.8);
+}
+
+#board-container {
+   position: relative;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-grow: 0.85;
+}
+
+/* retry button */
+.retry-button {
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   width: 75px;
+   height: 75px;
+   transform: translate(-50%, -50%);
+   z-index: 10;
+
+   cursor: pointer;
+   border-radius: 50%;
+   opacity: 0;
+   visibility: hidden;
+   transition: all 0.3s ease-in-out 0.1s;
+}
+.retry-button.active {
+   opacity: 1;
+   visibility: visible;
+}
+html.dark .retry-button {
+   background-color: gainsboro;
+   color: rgb(58, 58, 60);
+}
+html.light .retry-button {
+   background-color: #45495f;
+   color: gainsboro;
+   box-shadow: 0px 0px 10px 5px #73768b;
+}
+
+#board {
+   display: grid;
+   grid-template-columns: repeat(5, 1fr);
+   gap: 5px;
+   padding: 10px;
+   box-sizing: border-box;
+}
+
+.square {
+   min-width: 60px;
+   min-height: 60px;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+
+   font-size: 44px;
+   font-weight: 700;
+   border: 2px solid rgb(58, 58, 60);
+   text-transform: uppercase;
+   /* animation-duration: 10s !important; */
+}
+html.dark .square {
+   color: gainsboro;
+}
+html.light .square {
+   color: #45495f;
+}
+html.light .square.animate__flipInX {
+   color: gainsboro;
+}
+
+.square.incorrect-letter {
+   background-color: rgb(58, 58, 60);
+   border-color: rgb(58, 58, 60);
+}
+
+.square.correct-letter {
+   background-color: rgb(181, 159, 59);
+   border-color: rgb(181, 159, 59);
+}
+html.color-blind-mode .square.correct-letter {
+   background-color: rgb(63, 148, 233);
+   border-color: rgb(63, 148, 233);
+}
+
+.square.correct-letter-in-place {
+   background-color: rgb(83, 141, 78);
+   border-color: rgb(83, 141, 78);
+}
+html.color-blind-mode .correct-letter-in-place {
+   background-color: rgb(241, 126, 45);
+   border-color: rgb(241, 126, 45);
+}
+
+.square.exists-twice {
+   position: relative;
+   background-color: rgb(181, 159, 59);
+}
+html.color-blind-mode .square.exists-twice {
+   background-color: rgb(63, 148, 233);
+}
+.square.exists-twice::before {
+   content: "2";
+   position: absolute;
+   top: 2px;
+   right: 4px;
+   font-size: 14px;
+}
+
+.square.exists-three-times {
+   position: relative;
+   background-color: rgb(181, 159, 59);
+}
+html.color-blind-mode .square.exists-three-times {
+   background-color: rgb(63, 148, 233);
+}
+.square.exists-three-times::before {
+   content: "3";
+   position: absolute;
+   top: 2px;
+   right: 4px;
+   font-size: 14px;
+}
+
+@media only screen and (max-width: 400px) {
+   .square {
+      min-width: 15vw;
+      min-height: 15vw;
+   }
+}
+
+#keyboard-container {
+   height: 200px;
+}
+
+#final-score {
+   color: gainsboro;
+}
+
+.keyboard-row {
+   display: flex;
+   justify-content: center;
+   width: 100%;
+   margin: 0 auto 8px;
+   touch-action: manipulation;
+}
+
+.keyboard-row button {
+   padding: 0;
+   margin-right: 6px;
+   height: 58px;
+   cursor: pointer;
+   flex-grow: 1;
+
+   border-radius: 4px;
+   user-select: none;
+   text-transform: uppercase;
+   background-color: rgb(129, 131, 132);
+   color: rgb(215, 218, 220);
+   font-size: inherit;
+   font-weight: 700;
+   border: 0;
+   transition: all 0.15s ease 0s;
+}
+@media (any-hover: hover) {
+   .keyboard-row button:hover {
+      background-color: #aaa;
+   }
+}
+
+.keyboard-row button.wide-button {
+   flex-grow: 1.5;
+}
+
+.keyboard-row button.incorrect-letter {
+   background-color: rgb(58, 58, 60);
+}
+
+.keyboard-row button.correct-letter {
+   background-color: rgb(181, 159, 59);
+}
+html.color-blind-mode .keyboard-row button.correct-letter {
+   background-color: rgb(63, 148, 233);
+}
+
+.keyboard-row button.correct-letter-in-place {
+   background-color: rgb(83, 141, 78);
+}
+html.color-blind-mode .keyboard-row button.correct-letter-in-place {
+   background-color: rgb(241, 126, 45);
+}
+
+.keyboard-row button.exists-twice {
+   position: relative;
+   background-color: rgb(181, 159, 59);
+}
+html.color-blind-mode .keyboard-row button.exists-twice {
+   background-color: rgb(63, 148, 233);
+}
+.keyboard-row button.exists-twice::before {
+   content: "2";
+   position: absolute;
+   top: 2px;
+   right: 6px;
+   font-size: 14px;
+}
+
+.keyboard-row button.exists-three-times {
+   position: relative;
+   background-color: rgb(181, 159, 59);
+}
+html.color-blind-mode .keyboard-row button.exists-three-times {
+   background-color: rgb(63, 148, 233);
+}
+.keyboard-row button.exists-three-times::before {
+   content: "3";
+   position: absolute;
+   top: 2px;
+   right: 4px;
+   font-size: 14px;
+}
+
+.spacer-half {
+   flex-grow: 0.5;
+}
+
+/* Modals */
+.modal {
+   position: fixed;
+   z-index: 15;
+   left: 0;
+   top: 0;
+   width: 100%;
+   height: 100%;
+   overflow: auto;
+   background-color: rgba(0, 0, 0, 0.6);
+   opacity: 0;
+   visibility: hidden;
+   transition: all 0.3s ease 0s;
+}
+
+#stats-modal,
+#finish-modal,
+#settings-modal {
+   padding-top: 50px;
+}
+
+.modal-content {
+   margin: 5% auto;
+   padding: 25px;
+   width: 60%;
+   max-width: 500px;
+}
+@media (max-width: 767px) {
+   .modal-content {
+      width: 80%;
+      margin: 10% auto;
+   }
+}
+html.dark .modal-content {
+   color: gainsboro;
+   background-color: rgb(18, 18, 19);
+}
+html.light .modal-content {
+   color: #45495f;
+   background-color: gainsboro;
+}
+
+.modal-content .titleClose {
+   width: 100%;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin: -25px 0 20px -25px;
+   padding: 15px 25px;
+
+   background-color: rgb(58, 58, 60, 0.4);
+}
+html.dark .titleClose {
+   background-color: rgb(58, 58, 60, 0.4);
+}
+html.light .titleClose {
+   color: gainsboro;
+   background-color: #45495f;
+}
+
+.modal-content h3:not(:last-child) {
+   margin-bottom: 10px;
+}
+
+.modal-content p {
+   margin-bottom: 14px;
+}
+.modal-content p:last-child {
+   margin-top: 20px;
+}
+
+#help-modal .modal-content {
+   display: flex;
+   flex-direction: column;
+}
+#help-modal img {
+   margin-bottom: 15px;
+}
+
+.modal-content hr {
+   border: 1px solid rgb(58, 58, 60);
+}
+
+#finish-modal .titleClose {
+   position: relative;
+   justify-content: center;
+}
+#finish-modal .titleClose span {
+   position: absolute;
+   top: 50%;
+   right: 25px;
+   transform: translateY(-45%);
+}
+
+#finish-modal .cont * {
+   text-align: center;
+   display: block;
+   margin: 0 auto;
+}
+
+#finish-modal .desc {
+   font-size: 18px;
+}
+html.dark #finish-modal .desc {
+   color: #fff;
+}
+html.light #finish-modal .desc {
+   color: #45495f;
+}
+
+#finish-modal .word {
+   margin: 12px auto 10px auto;
+   padding: 10px 15px;
+   font-size: 18px;
+   font-weight: 700;
+   text-transform: uppercase;
+   border-radius: 5px;
+   background-color: rgba(58, 58, 60, 0.4);
+   border: 2px dashed #45495f;
+   max-width: fit-content;
+   user-select: none;
+}
+html.dark #finish-modal .word,
+html.light #finish-modal .word {
+   color: gainsboro;
+}
+
+#finish-modal .definition {
+   color: #7999e1;
+   text-decoration: none;
+   margin-bottom: 10px;
+}
+#finish-modal .definition:hover {
+   text-decoration: underline;
+}
+
+#finish-modal .new-game-btn {
+   color: #fff;
+   font-size: 14px;
+   font-weight: 700;
+   text-transform: uppercase;
+   padding: 10px 30px;
+   line-height: 24px;
+   cursor: pointer;
+   border: 0;
+   border-radius: 5px;
+   background-color: #57ac57;
+   transition: 0.2s;
+}
+#finish-modal .new-game-btn:hover {
+   background: #6ac66a;
+}
+
+#finish-modal .new-game-btn:active {
+   padding: 10px 35px;
+}
+
+#finish-modal .or-text {
+   color: rgb(129, 131, 132);
+   font-size: 13px;
+   margin: 7px 0;
+}
+
+#settings-modal .main_title {
+   font-size: 17px;
+   font-weight: 700;
+   margin-bottom: 3px;
+}
+html.dark #settings-modal .main_title {
+   color: #dfe1f3;
+}
+html.light #settings-modal .main_title {
+   color: #45495f;
+}
+
+#settings-modal hr {
+   display: block;
+   width: 100%;
+   height: 2px;
+   margin: 12px 0;
+   border: 0;
+}
+html.dark #settings-modal hr {
+   background-color: rgb(58, 58, 60);
+}
+html.light #settings-modal hr {
+   background-color: #45495f;
+}
+
+#settings-modal .center {
+   text-align: center;
+}
+
+#settings-modal .numbers {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   gap: 6px;
+   margin-top: 8px;
+   margin-bottom: 10px;
+}
+
+.number_checkbox .label_check {
+   color: #fff;
+   font-size: 16px;
+   line-height: 32px;
+}
+
+.number_checkbox input[type="radio"] {
+   display: none;
+}
+
+.number_checkbox input[type="radio"] + .check_text {
+   position: relative;
+   display: block;
+   overflow: hidden;
+   cursor: pointer;
+   text-align: center;
+   white-space: nowrap;
+   text-overflow: ellipsis;
+   padding: 6px 14px;
+   border-radius: 5px;
+   background-color: rgb(58, 58, 60);
+   transition: 0.2s;
+}
+
+.number_checkbox input[type="radio"] + .check_text:hover,
+html.dark .number_checkbox input[type="radio"] + .check_text:hover {
+   color: #fff;
+   background-color: #6bba6b;
+}
+
+.number_checkbox input[type="radio"]:checked + .check_text,
+html.dark .number_checkbox input[type="radio"]:checked + .check_text {
+   color: #fff;
+   font-weight: 700;
+   background-color: #6bba6b;
+}
+
+.number_checkbox input[type="radio"]:disabled + .check_text {
+   color: #96907a;
+   cursor: default;
+   background: #f2efe4;
+}
+
+#settings-modal .main-flex {
+   position: relative;
+}
+
+#settings-modal .main_desc {
+   text-align: left;
+   max-width: 84%;
+   font-size: 15px;
+   display: inline-block;
+}
+@media (max-width: 767px) {
+   #settings-modal .main_desc {
+      padding-right: 60px;
+   }
+   #settings-modal .main_title {
+      padding-right: 60px;
+   }
+}
+html.dark #settings-modal .main_desc {
+   color: #c3c7e0;
+}
+html.light #settings-modal .main_desc {
+   color: #5b607a;
+}
+
+.checkbox {
+   width: 48px;
+   margin: 10px auto 0;
+   position: absolute;
+   margin-top: -35px;
+   right: 0px;
+}
+.checkbox input[type="checkbox"] {
+   display: none;
+}
+.checkbox input[type="checkbox"] + .check_text {
+   position: relative;
+   display: block;
+   width: 48px;
+   height: 26px;
+   cursor: pointer;
+   border-radius: 100px;
+   background-color: rgb(58, 58, 60);
+}
+.checkbox input[type="checkbox"] + .check_text::after {
+   content: "";
+   position: absolute;
+   top: 3px;
+   left: 3px;
+   width: 20px;
+   height: 20px;
+   border-radius: 50%;
+   background-color: #fff;
+   transition: all 0.3s ease 0s;
+}
+.checkbox input[type="checkbox"]:checked + .check_text {
+   background-color: #57ac57;
+}
+.checkbox input[type="checkbox"]:checked + .check_text::after {
+   left: 25px;
+}
+
+/* Alert */
+.alert {
+   font-weight: 700;
+   font-size: 22px;
+   position: absolute;
+   top: 40%;
+   left: 50%;
+   display: block;
+   opacity: 0;
+   visibility: hidden;
+   min-width: 285px;
+   max-width: 100%;
+   max-height: 100%;
+   padding: 32px 15px;
+   transform: translate(-50%, -50%);
+   text-align: center;
+   border-radius: 9px;
+   box-shadow: 0 0 100px rgba(0, 0, 0, 0.3);
+   transition: all 0.1s ease 0s;
+}
+html.dark .alert {
+   background-color: #45495f;
+   color: gainsboro;
+}
+html.light .alert {
+   background-color: gainsboro;
+   color: #45495f;
+}
+.alert.active {
+   opacity: 1;
+   visibility: visible;
+}
+.alert.removed {
+   display: none;
+}
+
+.message {
+   display: block;
+   opacity: 0;
+   visibility: hidden;
+   font-size: 12px;
+   padding: 4px 12px;
+   border-radius: 20px;
+   background: rgb(129, 131, 132);
+   text-align: center;
+   width: max-content;
+   margin-left: auto;
+   margin-right: auto;
+   margin-bottom: 15px;
+   transition: all 0.1s ease 0s;
+}
+html.dark .message {
+   color: rgba(0, 0, 0, 0.75);
+}
+html.light .message {
+   color: gainsboro;
+}
+.message.active {
+   opacity: 1;
+   visibility: visible;
+}
+
+/* The Close Button */
+.close {
+   display: inline-block;
+   margin-top: -4px;
+   color: #fff;
+   font-size: 28px;
+   font-weight: bold;
+   transition: all 0.15s ease 0s;
+   cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+   color: #aaa;
+}
+
+#help-modal .close {
+   margin-bottom: 20px;
+   align-self: end;
+}
+html.light #help-modal .close {
+   color: #45495f;
+}
+html.light #help-modal .close:hover,
+html.light #help-modal .close:focus {
+   color: rgb(69, 73, 95, 0.8);
+}
+
+#examples {
+   width: 80%;
+}
+
+.hidden {
+   display: none;
+}
